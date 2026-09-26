@@ -14,6 +14,8 @@ right content" without spamming real inboxes or needing real credentials.
 - `viewer.py` — a small local web UI (`http://127.0.0.1:8025`) to browse
   captured messages, see headers, and preview the HTML/text body.
 - `captured_emails/` — created automatically; holds the raw `.eml` files.
+- `send_real_email.py` — sends one real test email through a real account
+  you control, to a recipient you specify (see below).
 
 ## Setup
 
@@ -87,6 +89,36 @@ python smtp_catcher.py --max-messages 200 --max-age-hours 24
 
 Rotation also runs once at startup, so stale files from a previous run get
 cleaned up as soon as the limits are set.
+
+## Sending a real test email (to yourself)
+
+`smtp_catcher.py` and `viewer.py` never deliver anything — that's on
+purpose, so you can safely test send-code without touching real inboxes.
+
+Once you're ready to confirm the real path works, `send_real_email.py`
+sends exactly **one** real email through a real account you control, to a
+recipient you specify explicitly (send it to yourself). It's not a bulk
+tool — it always sends a single message per run and asks for confirmation
+before sending.
+
+```bash
+export SMTP_HOST=smtp.gmail.com     # or your provider's SMTP host
+export SMTP_PORT=587
+export SMTP_USER=you@gmail.com
+export SMTP_PASS=your_app_password  # see note below
+
+python send_real_email.py --to you@gmail.com --subject "Test" --body "Hello, this works."
+```
+
+It will print exactly who it's about to send to/from and ask `Send this
+now? [y/N]` before doing anything — pass `--yes` to skip that prompt once
+you trust the setup.
+
+**Gmail note:** if `SMTP_USER` is a Gmail address, use an **App Password**
+instead of your normal account password (your Google Account needs 2-Step
+Verification on first): Google Account → Security → 2-Step Verification →
+App passwords. Other providers (Outlook, a custom mail server, etc.) work
+the same way with their own SMTP host/port and credentials.
 
 ## Scope, on purpose
 
