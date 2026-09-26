@@ -67,6 +67,27 @@ python smtp_catcher.py --host 127.0.0.1 --port 1025 --dir ./captured_emails
 python viewer.py --host 127.0.0.1 --port 8025
 ```
 
+## Rotation
+
+During a long test run, `captured_emails/` can grow without bound if you
+don't clean it up. Two optional flags handle that automatically — both are
+off by default, so nothing is deleted unless you opt in:
+
+```bash
+# keep only the 200 newest messages, deleting older ones as new ones arrive
+python smtp_catcher.py --max-messages 200
+
+# delete anything older than 24 hours
+python smtp_catcher.py --max-age-hours 24
+
+# both together, checked on every new message and also swept every
+# 5 minutes (--rotate-check-interval) in case the server sits idle
+python smtp_catcher.py --max-messages 200 --max-age-hours 24
+```
+
+Rotation also runs once at startup, so stale files from a previous run get
+cleaned up as soon as the limits are set.
+
 ## Scope, on purpose
 
 This tool is for local development/testing only:
