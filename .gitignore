@@ -1,0 +1,4 @@
+captured_emails/
+*.log
+__pycache__/
+*.pyc
